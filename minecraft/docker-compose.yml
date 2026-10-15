@@ -1,0 +1,21 @@
+###############################################
+# CRAFTY CONTROLLER - Minecraft server manager
+###############################################
+
+services:
+  crafty:
+    container_name: crafty
+    image: registry.gitlab.com/crafty-controller/crafty-4:latest
+    restart: always
+    environment:
+      - TZ=America/New_York
+    ports:
+      - "8443:8443"                 # Crafty web panel (HTTPS)
+      - "25500-25600:25500-25600"   # Port range for Minecraft servers
+      - "24454:24454/udp"           # Simple Voice Chat mod
+    volumes:
+      - ./docker/backups:/crafty/backups
+      - ./docker/logs:/crafty/logs
+      - ./docker/servers:/crafty/servers
+      - ./docker/config:/crafty/app/config
+      - ./docker/import:/crafty/import

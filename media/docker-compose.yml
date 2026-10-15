@@ -1,0 +1,39 @@
+###############################################
+# Common keys shared by every service
+###############################################
+
+x-common-keys: &common-keys
+  restart: unless-stopped
+  logging:
+    driver: json-file
+  environment:
+    PUID: 1000
+    PGID: 1000
+    TZ: America/New_York
+  dns:
+    - 1.1.1.1
+    - 1.0.0.1
+
+services:
+###############################################
+# JELLYFIN - Media Server
+###############################################
+
+  jellyfin:
+    <<: *common-keys
+    container_name: jellyfin
+    image: ghcr.io/hotio/jellyfin:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /docker/appdata/jellyfin:/config
+      - /data/media:/data/media:ro # read-only so Jellyfin can't modify the library
+    ports:
+      - 8096:8096
+
+###############################################
+# Dedicated network for the media stack
+###############################################
+
+networks:
+  default:
+    name: media_network
